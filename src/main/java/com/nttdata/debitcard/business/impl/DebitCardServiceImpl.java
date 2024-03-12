@@ -63,16 +63,4 @@ public class DebitCardServiceImpl implements DebitCardService {
             .doOnComplete(() -> log.info("Successful search - customerId: ".concat(customerId)));
     }
 
-    @Override
-    public Mono<Void> deleteDebitCard(String debitCardId) {
-        return debitCardRepository.existsById(debitCardId)
-            .flatMap(aBoolean -> {
-                if (Boolean.TRUE.equals(aBoolean)) {
-                    return debitCardRepository.deleteById(debitCardId);
-                }
-                return Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Debit Card not found - " +
-                    "debitCardId: ".concat(debitCardId)));
-            })
-            .doOnSuccess(customer -> log.info("Successful delete - debitCardId: ".concat(debitCardId)));
-    }
 }

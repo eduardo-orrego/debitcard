@@ -14,6 +14,4 @@ public interface DebitCardRepository extends ReactiveMongoRepository<DebitCard, 
 
     Flux<DebitCard> findByCustomerId(String customerId);
 
-    Mono<Boolean> existsByCustomerId(String customerId);
-
 }

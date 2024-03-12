@@ -7,7 +7,7 @@ spring:
       database: demo
 
 server:
-  port: 8086
+  port: 8084
 #  error:
 #    include-stacktrace: NEVER
 
