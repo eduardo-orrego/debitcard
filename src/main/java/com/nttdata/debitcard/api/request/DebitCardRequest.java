@@ -3,6 +3,7 @@ package com.nttdata.debitcard.api.request;
 import com.nttdata.debitcard.enums.DebitCardStatusEnum;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -24,8 +25,7 @@ public class DebitCardRequest {
     private BigInteger cardNumber;
     @NotBlank(message = "El campo 'customerId' no puede ser vacío")
     private String customerId;
-    @NotBlank(message = "El campo 'accountId' no puede ser vacío")
-    private String accountId;
+    @NotEmpty(message = "El campo 'accountsAssociated' no puede ser vacío")
     @Valid
     private List<AccountAssociatedRequest> accountsAssociated;
 }

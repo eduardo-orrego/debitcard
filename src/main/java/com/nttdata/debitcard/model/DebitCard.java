@@ -16,7 +16,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "creditCard")
+@Document(collection = "debitCard")
 public class DebitCard {
 
     @Id
@@ -27,7 +27,6 @@ public class DebitCard {
     private LocalDate activateDate;
     private String cvv;
     private String customerId;
-    private String accountId;
     private List<AccountAssociated> accountsAssociated;
     private LocalDateTime lastTransactionDate;
     private LocalDateTime dateCreated;
