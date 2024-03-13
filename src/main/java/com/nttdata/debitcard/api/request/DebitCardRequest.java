@@ -1,0 +1,31 @@
+package com.nttdata.debitcard.api.request;
+
+import com.nttdata.debitcard.enums.DebitCardStatusEnum;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import java.math.BigInteger;
+import java.time.LocalDate;
+import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class DebitCardRequest {
+
+    @NotNull(message = "El campo 'status' no puede ser nulo")
+    private DebitCardStatusEnum status;
+    private LocalDate expirationDate;
+    private LocalDate activateDate;
+    private String cvv;
+    private BigInteger cardNumber;
+    @NotBlank(message = "El campo 'customerId' no puede ser vacío")
+    private String customerId;
+    @NotBlank(message = "El campo 'accountId' no puede ser vacío")
+    private String accountId;
+    @Valid
+    private List<AccountAssociatedRequest> accountsAssociated;
+}
