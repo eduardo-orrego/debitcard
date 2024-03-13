@@ -25,7 +25,6 @@ public class DebitCardBuilder {
             .activateDate(debitCardRequest.getActivateDate())
             .cvv(debitCardRequest.getCvv())
             .customerId(debitCardRequest.getCustomerId())
-            .accountId(debitCardRequest.getAccountId())
             .accountsAssociated(toAccountAssociatedEntityList(debitCardRequest.getAccountsAssociated()))
             .lastTransactionDate(LocalDateTime.now())
             .dateCreated(LocalDateTime.now())
