@@ -6,11 +6,13 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface DebitCardRepository {
-    Flux<DebitCard> findDebitCards(String customerId);
+    Flux<DebitCard> findDebitCards(BigInteger customerDocument);
 
     Mono<DebitCard> findDebitCard(BigInteger cardNumber);
 
     Mono<DebitCard> findDebitCard(String debitCardId);
+
+    Mono<Boolean> findExistsDebitCard(BigInteger customerDocument);
 
     Mono<DebitCard> saveDebitCard(DebitCard debitCard);
 }

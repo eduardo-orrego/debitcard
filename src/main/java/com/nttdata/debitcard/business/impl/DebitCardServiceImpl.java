@@ -24,21 +24,32 @@ public class DebitCardServiceImpl implements DebitCardService {
     @Override
     public Mono<DebitCard> saveDebitCard(DebitCardRequest debitCardRequest) {
 
-        return Mono.just(debitCardRequest)
-            .map(DebitCardBuilder::toDebitCardEntity)
-            .flatMap(debitCardRepository::saveDebitCard)
-            .doOnSuccess(customer -> log.info("Successful save - debitCardId: ".concat(customer.getId())));
+        return debitCardRepository.findExistsDebitCard(debitCardRequest.getCustomerDocument())
+            .flatMap(aBoolean -> {
+                if (Boolean.FALSE.equals(aBoolean)) {
+                    return debitCardRepository.saveDebitCard(DebitCardBuilder.toDebitCardEntity(debitCardRequest));
+
+                }
+                return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "There is another Debit Card with the same Card Number: "
+                        .concat(debitCardRequest.getCardNumber().toString())));
+            });
+
     }
 
     @Override
     public Mono<DebitCard> updateDebitCard(DebitCardRequest debitCardRequest, String debitCardId) {
         return debitCardRepository.findDebitCard(debitCardId)
-            .flatMap(debitCard -> debitCardRepository.saveDebitCard(
-                DebitCardBuilder.toDebitCardEntity(debitCardRequest, debitCard))
-            )
-            .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Debit Card not found - "
-                + "debitCardId: ".concat(debitCardId))));
+            .flatMap(debitCardCurrent -> {
+                if (debitCardRequest.getCardNumber().compareTo(debitCardCurrent.getCardNumber()) == 0) {
+                    return debitCardRepository.saveDebitCard(DebitCardBuilder.toDebitCardEntity(debitCardRequest,
+                        debitCardCurrent));
+                }
 
+                return this.saveDebitCard(debitCardRequest);
+            })
+            .switchIfEmpty(Mono.defer(() -> Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Debit Card not found - debitCardId: ".concat(debitCardId)))));
     }
 
     @Override
@@ -46,14 +57,13 @@ public class DebitCardServiceImpl implements DebitCardService {
         return debitCardRepository.findDebitCard(cardNumber)
             .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Debit Card not found - "
                 + "cardNumber: ".concat(cardNumber.toString()))));
-
     }
 
     @Override
-    public Flux<DebitCard> getDebitCards(String customerId) {
-        return debitCardRepository.findDebitCards(customerId)
+    public Flux<DebitCard> getDebitCards(BigInteger customerDocument) {
+        return debitCardRepository.findDebitCards(customerDocument)
             .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Debit Card not found - "
-                + "customerId: ".concat(customerId))));
+                + "customerDocument: ".concat(customerDocument.toString()))));
 
     }
 

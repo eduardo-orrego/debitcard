@@ -13,5 +13,5 @@ public interface DebitCardService {
 
     Mono<DebitCard> getDebitCard(BigInteger cardNumber);
 
-    Flux<DebitCard> getDebitCards(String customerId);
+    Flux<DebitCard> getDebitCards(BigInteger customerDocument);
 }

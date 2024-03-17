@@ -20,13 +20,13 @@ public class DebitCard {
 
     @Id
     private String id;
-    private BigInteger cardNumber;
     private String status;
+    private BigInteger customerDocument;
+    private List<AccountAssociated> accountsAssociated;
+    private BigInteger cardNumber;
+    private Integer cvv;
     private LocalDate expirationDate;
     private LocalDate activateDate;
-    private Integer cvv;
-    private String customerId;
-    private List<AccountAssociated> accountsAssociated;
     private LocalDateTime dateCreated;
     private LocalDateTime lastUpdated;
 }

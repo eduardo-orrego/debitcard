@@ -20,9 +20,9 @@ public class DebitCardRepositoryImpl implements DebitCardRepository {
     private DebitCardReactiveMongodb debitCardReactiveMongodb;
 
     @Override
-    public Flux<DebitCard> findDebitCards(String customerId) {
-        return debitCardReactiveMongodb.findByCustomerId(customerId)
-            .doOnComplete(() -> log.info("Successful find - customerId: ".concat(customerId)));
+    public Flux<DebitCard> findDebitCards(BigInteger customerDocument) {
+        return debitCardReactiveMongodb.findByCustomerDocument(customerDocument)
+            .doOnComplete(() -> log.info("Successful find - customerDocument: ".concat(customerDocument.toString())));
     }
 
     @Override
@@ -38,7 +38,13 @@ public class DebitCardRepositoryImpl implements DebitCardRepository {
     }
 
     @Override
-    public Mono<DebitCard> saveDebitCard(DebitCard debitCard){
+    public Mono<Boolean> findExistsDebitCard(BigInteger customerDocument) {
+        return debitCardReactiveMongodb.existsByCustomerDocument(customerDocument)
+            .doOnSuccess(result -> log.info("Successful find - debitCardId: ".concat(customerDocument.toString())));
+    }
+
+    @Override
+    public Mono<DebitCard> saveDebitCard(DebitCard debitCard) {
         return debitCardReactiveMongodb.save(debitCard)
             .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Debit Card not found - "
                 + "debitCardId: ".concat(debitCard.getId()))));
