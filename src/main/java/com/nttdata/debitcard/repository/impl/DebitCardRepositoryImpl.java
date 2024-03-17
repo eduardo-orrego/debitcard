@@ -38,9 +38,9 @@ public class DebitCardRepositoryImpl implements DebitCardRepository {
     }
 
     @Override
-    public Mono<Boolean> findExistsDebitCard(BigInteger customerDocument) {
-        return debitCardReactiveMongodb.existsByCustomerDocument(customerDocument)
-            .doOnSuccess(result -> log.info("Successful find - debitCardId: ".concat(customerDocument.toString())));
+    public Mono<Boolean> findExistsDebitCard(BigInteger cardNumber) {
+        return debitCardReactiveMongodb.existsByCardNumber(cardNumber)
+            .doOnSuccess(result -> log.info("Successful find exists - cardNumber: ".concat(cardNumber.toString())));
     }
 
     @Override

@@ -12,7 +12,7 @@ public interface DebitCardRepository {
 
     Mono<DebitCard> findDebitCard(String debitCardId);
 
-    Mono<Boolean> findExistsDebitCard(BigInteger customerDocument);
+    Mono<Boolean> findExistsDebitCard(BigInteger cardNumber);
 
     Mono<DebitCard> saveDebitCard(DebitCard debitCard);
 }

@@ -14,6 +14,6 @@ public interface DebitCardReactiveMongodb extends ReactiveMongoRepository<DebitC
 
     Flux<DebitCard> findByCustomerDocument(BigInteger customerDocument);
 
-    Mono<Boolean> existsByCustomerDocument(BigInteger customerDocument);
+    Mono<Boolean> existsByCardNumber(BigInteger cardNumber);
 
 }

@@ -24,7 +24,7 @@ public class DebitCardServiceImpl implements DebitCardService {
     @Override
     public Mono<DebitCard> saveDebitCard(DebitCardRequest debitCardRequest) {
 
-        return debitCardRepository.findExistsDebitCard(debitCardRequest.getCustomerDocument())
+        return debitCardRepository.findExistsDebitCard(debitCardRequest.getCardNumber())
             .flatMap(aBoolean -> {
                 if (Boolean.FALSE.equals(aBoolean)) {
                     return debitCardRepository.saveDebitCard(DebitCardBuilder.toDebitCardEntity(debitCardRequest));
