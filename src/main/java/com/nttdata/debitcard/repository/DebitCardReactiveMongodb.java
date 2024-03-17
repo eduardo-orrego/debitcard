@@ -8,7 +8,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Repository
-public interface DebitCardRepository extends ReactiveMongoRepository<DebitCard, String> {
+public interface DebitCardReactiveMongodb extends ReactiveMongoRepository<DebitCard, String> {
 
     Mono<DebitCard> findByCardNumber(BigInteger cardNumber);
 

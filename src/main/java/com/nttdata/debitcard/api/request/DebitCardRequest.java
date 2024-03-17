@@ -19,13 +19,14 @@ public class DebitCardRequest {
 
     @NotNull(message = "El campo 'status' no puede ser nulo")
     private DebitCardStatusEnum status;
-    private LocalDate expirationDate;
-    private LocalDate activateDate;
-    private String cvv;
-    private BigInteger cardNumber;
     @NotBlank(message = "El campo 'customerId' no puede ser vacío")
     private String customerId;
     @NotEmpty(message = "El campo 'accountsAssociated' no puede ser vacío")
     @Valid
     private List<AccountAssociatedRequest> accountsAssociated;
+
+    private LocalDate expirationDate;
+    private LocalDate activateDate;
+    private Integer cvv;
+    private BigInteger cardNumber;
 }

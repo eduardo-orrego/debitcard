@@ -18,49 +18,43 @@ import reactor.core.publisher.Mono;
 @Service
 public class DebitCardServiceImpl implements DebitCardService {
 
-    private final DebitCardRepository debitCardRepository;
-
     @Autowired
-    public DebitCardServiceImpl(DebitCardRepository debitCardRepository) {
-        this.debitCardRepository = debitCardRepository;
-    }
+    private DebitCardRepository debitCardRepository;
 
     @Override
     public Mono<DebitCard> saveDebitCard(DebitCardRequest debitCardRequest) {
+
         return Mono.just(debitCardRequest)
-            .map(debitCard -> DebitCardBuilder.toDebitCardEntity(debitCard, null))
-            .flatMap(debitCardRepository::save)
+            .map(DebitCardBuilder::toDebitCardEntity)
+            .flatMap(debitCardRepository::saveDebitCard)
             .doOnSuccess(customer -> log.info("Successful save - debitCardId: ".concat(customer.getId())));
     }
 
     @Override
     public Mono<DebitCard> updateDebitCard(DebitCardRequest debitCardRequest, String debitCardId) {
-        return debitCardRepository.existsById(debitCardId)
-            .flatMap(aBoolean -> {
-                if (Boolean.TRUE.equals(aBoolean)) {
-                    return debitCardRepository.save(
-                        DebitCardBuilder.toDebitCardEntity(debitCardRequest, debitCardId));
-                }
-                return Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Debit Card not found - "
-                    + "debitCardId: ".concat(debitCardId)));
-            })
-            .doOnSuccess(account -> log.info("Successful update - debitCardId: ".concat(debitCardId)));
+        return debitCardRepository.findDebitCard(debitCardId)
+            .flatMap(debitCard -> debitCardRepository.saveDebitCard(
+                DebitCardBuilder.toDebitCardEntity(debitCardRequest, debitCard))
+            )
+            .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Debit Card not found - "
+                + "debitCardId: ".concat(debitCardId))));
+
     }
 
     @Override
     public Mono<DebitCard> getDebitCard(BigInteger cardNumber) {
-        return debitCardRepository.findByCardNumber(cardNumber)
+        return debitCardRepository.findDebitCard(cardNumber)
             .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Debit Card not found - "
-                + "cardNumber: ".concat(cardNumber.toString()))))
-            .doOnSuccess(customer -> log.info("Successful search - cardNumber: ".concat(cardNumber.toString())));
+                + "cardNumber: ".concat(cardNumber.toString()))));
+
     }
 
     @Override
     public Flux<DebitCard> getDebitCards(String customerId) {
-        return debitCardRepository.findByCustomerId(customerId)
+        return debitCardRepository.findDebitCards(customerId)
             .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Debit Card not found - "
-                + "customerId: ".concat(customerId))))
-            .doOnComplete(() -> log.info("Successful search - customerId: ".concat(customerId)));
+                + "customerId: ".concat(customerId))));
+
     }
 
 }
