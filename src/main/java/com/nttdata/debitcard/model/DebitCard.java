@@ -29,4 +29,5 @@ public class DebitCard {
     private LocalDate activateDate;
     private LocalDateTime dateCreated;
     private LocalDateTime lastUpdated;
+
 }
