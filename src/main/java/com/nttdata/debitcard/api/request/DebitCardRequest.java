@@ -5,6 +5,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
@@ -19,13 +21,20 @@ public class DebitCardRequest {
 
     @NotNull(message = "El campo 'status' no puede ser nulo")
     private DebitCardStatusEnum status;
-    private LocalDate expirationDate;
-    private LocalDate activateDate;
-    private String cvv;
-    private BigInteger cardNumber;
-    @NotBlank(message = "El campo 'customerId' no puede ser vacío")
-    private String customerId;
+
+    @NotNull(message = "El campo 'customerDocument' no puede ser vacío")
+    private BigInteger customerDocument;
+
     @NotEmpty(message = "El campo 'accountsAssociated' no puede ser vacío")
     @Valid
     private List<AccountAssociatedRequest> accountsAssociated;
+
+    @Size(min = 16, max = 16)
+    @Pattern(regexp = "^[45]\\d{15}$")
+    private BigInteger cardNumber;
+    @Size(min = 3, max = 3)
+    private Integer cvv;
+    private LocalDate expirationDate;
+    private LocalDate activateDate;
+
 }

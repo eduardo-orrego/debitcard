@@ -118,14 +118,14 @@ public class DebitCardController {
 
 
     /**
-     * GET : Get a list of Debit Cards by customer
+     * GET : Get a list of Debit Cards for the customer
      *
-     * @param customerId (required)
+     * @param customerDocument (required)
      * @return OK (status code 200)
      */
     @Operation(
         operationId = "debitCardsGet",
-        summary = "Get a list of Debit Cards for the user",
+        summary = "Get a list of Debit Cards for the customer",
         responses = {
             @ApiResponse(responseCode = "200", description = "OK", content = {
                 @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation =
@@ -138,10 +138,10 @@ public class DebitCardController {
         produces = {"application/json"}
     )
     public Flux<DebitCard> debitCardsGet(
-        @NotNull @Parameter(name = "customerId", description = "", required = true, in = ParameterIn.QUERY)
-        @Validated @RequestParam(value = "customerId") String customerId
+        @NotNull @Parameter(name = "customerDocument", description = "", required = true, in = ParameterIn.QUERY)
+        @Validated @RequestParam(value = "customerDocument") BigInteger customerDocument
     ) {
-        return debitCardService.getDebitCards(customerId);
+        return debitCardService.getDebitCards(customerDocument);
     }
 
 }

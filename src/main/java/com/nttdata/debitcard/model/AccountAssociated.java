@@ -1,5 +1,6 @@
 package com.nttdata.debitcard.model;
 
+import java.math.BigInteger;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +13,6 @@ import lombok.NoArgsConstructor;
 public class AccountAssociated {
 
     private String associatedType;
-    private String accountId;
+    private BigInteger accountNumber;
 
 }

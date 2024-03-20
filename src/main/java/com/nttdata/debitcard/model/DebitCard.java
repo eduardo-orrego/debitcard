@@ -1,6 +1,5 @@
 package com.nttdata.debitcard.model;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,14 +20,14 @@ public class DebitCard {
 
     @Id
     private String id;
-    private BigInteger cardNumber;
     private String status;
+    private BigInteger customerDocument;
+    private List<AccountAssociated> accountsAssociated;
+    private BigInteger cardNumber;
+    private Integer cvv;
     private LocalDate expirationDate;
     private LocalDate activateDate;
-    private String cvv;
-    private String customerId;
-    private List<AccountAssociated> accountsAssociated;
-    private LocalDateTime lastTransactionDate;
     private LocalDateTime dateCreated;
     private LocalDateTime lastUpdated;
+
 }
