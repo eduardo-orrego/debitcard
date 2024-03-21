@@ -14,57 +14,69 @@ import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+/**
+ * Class: DebitCardServiceImpl. <br/>
+ * <b>Bootcamp NTTDATA</b><br/>
+ *
+ * @author NTTDATA
+ * @version 1.0
+ *   <u>Developed by</u>:
+ *   <ul>
+ *   <li>Developer Carlos</li>
+ *   </ul>
+ * @since 1.0
+ */
 @Slf4j
 @Service
 public class DebitCardServiceImpl implements DebitCardService {
 
-    @Autowired
-    private DebitCardRepository debitCardRepository;
+  @Autowired
+  private DebitCardRepository debitCardRepository;
 
-    @Override
-    public Mono<DebitCard> saveDebitCard(DebitCardRequest debitCardRequest) {
+  @Override
+  public Mono<DebitCard> saveDebitCard(DebitCardRequest debitCardRequest) {
 
-        return debitCardRepository.findExistsDebitCard(debitCardRequest.getCardNumber())
-            .flatMap(aBoolean -> {
-                if (Boolean.FALSE.equals(aBoolean)) {
-                    return debitCardRepository.saveDebitCard(DebitCardBuilder.toDebitCardEntity(debitCardRequest));
+    return debitCardRepository.findExistsDebitCard(debitCardRequest.getCardNumber())
+      .flatMap(aBoolean -> {
+        if (Boolean.FALSE.equals(aBoolean)) {
+          return debitCardRepository.saveDebitCard(
+            DebitCardBuilder.toDebitCardEntity(debitCardRequest));
+        }
+        return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST,
+          "There is another Debit Card with the same Card Number: "
+            .concat(debitCardRequest.getCardNumber().toString())));
+      });
 
-                }
-                return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "There is another Debit Card with the same Card Number: "
-                        .concat(debitCardRequest.getCardNumber().toString())));
-            });
+  }
 
-    }
+  @Override
+  public Mono<DebitCard> updateDebitCard(DebitCardRequest debitCardRequest, String debitCardId) {
+    return debitCardRepository.findDebitCard(debitCardId)
+      .flatMap(debitCardCurrent -> {
+        if (debitCardRequest.getCardNumber().compareTo(debitCardCurrent.getCardNumber()) == 0) {
+          return debitCardRepository.saveDebitCard(
+            DebitCardBuilder.toDebitCardEntity(debitCardRequest, debitCardCurrent));
+        }
+        return this.saveDebitCard(debitCardRequest);
+      })
+      .switchIfEmpty(Mono.defer(() -> Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND,
+        "Debit Card not found - debitCardId: ".concat(debitCardId)))));
+  }
 
-    @Override
-    public Mono<DebitCard> updateDebitCard(DebitCardRequest debitCardRequest, String debitCardId) {
-        return debitCardRepository.findDebitCard(debitCardId)
-            .flatMap(debitCardCurrent -> {
-                if (debitCardRequest.getCardNumber().compareTo(debitCardCurrent.getCardNumber()) == 0) {
-                    return debitCardRepository.saveDebitCard(DebitCardBuilder.toDebitCardEntity(debitCardRequest,
-                        debitCardCurrent));
-                }
+  @Override
+  public Mono<DebitCard> getDebitCard(BigInteger cardNumber) {
+    return debitCardRepository.findDebitCard(cardNumber)
+      .switchIfEmpty(
+        Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Debit Card not found - "
+          + "cardNumber: ".concat(cardNumber.toString()))));
+  }
 
-                return this.saveDebitCard(debitCardRequest);
-            })
-            .switchIfEmpty(Mono.defer(() -> Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Debit Card not found - debitCardId: ".concat(debitCardId)))));
-    }
-
-    @Override
-    public Mono<DebitCard> getDebitCard(BigInteger cardNumber) {
-        return debitCardRepository.findDebitCard(cardNumber)
-            .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Debit Card not found - "
-                + "cardNumber: ".concat(cardNumber.toString()))));
-    }
-
-    @Override
-    public Flux<DebitCard> getDebitCards(BigInteger customerDocument) {
-        return debitCardRepository.findDebitCards(customerDocument)
-            .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Debit Card not found - "
-                + "customerDocument: ".concat(customerDocument.toString()))));
-
-    }
+  @Override
+  public Flux<DebitCard> getDebitCards(BigInteger customerDocument) {
+    return debitCardRepository.findDebitCards(customerDocument)
+      .switchIfEmpty(
+        Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Debit Card not found - "
+          + "customerDocument: ".concat(customerDocument.toString()))));
+  }
 
 }

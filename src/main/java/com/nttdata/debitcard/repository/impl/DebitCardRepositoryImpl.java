@@ -12,42 +12,57 @@ import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+/**
+ * Class: DebitCardRepositoryImpl. <br/>
+ * <b>Bootcamp NTTDATA</b><br/>
+ *
+ * @author NTTDATA
+ * @version 1.0
+ *   <u>Developed by</u>:
+ *   <ul>
+ *   <li>Developer Carlos</li>
+ *   </ul>
+ * @since 1.0
+ */
 @Slf4j
 @Repository
 public class DebitCardRepositoryImpl implements DebitCardRepository {
 
-    @Autowired
-    private DebitCardReactiveMongodb debitCardReactiveMongodb;
+  @Autowired
+  private DebitCardReactiveMongodb debitCardReactiveMongodb;
 
-    @Override
-    public Flux<DebitCard> findDebitCards(BigInteger customerDocument) {
-        return debitCardReactiveMongodb.findByCustomerDocument(customerDocument)
-            .doOnComplete(() -> log.info("Successful find - customerDocument: ".concat(customerDocument.toString())));
-    }
+  @Override
+  public Flux<DebitCard> findDebitCards(BigInteger customerDocument) {
+    return debitCardReactiveMongodb.findByCustomerDocument(customerDocument)
+      .doOnComplete(() -> log.info("Successful find - customerDocument: "
+        .concat(customerDocument.toString())));
+  }
 
-    @Override
-    public Mono<DebitCard> findDebitCard(BigInteger cardNumber) {
-        return debitCardReactiveMongodb.findByCardNumber(cardNumber)
-            .doOnSuccess(customer -> log.info("Successful find - cardNumber: ".concat(cardNumber.toString())));
-    }
+  @Override
+  public Mono<DebitCard> findDebitCard(BigInteger cardNumber) {
+    return debitCardReactiveMongodb.findByCardNumber(cardNumber)
+      .doOnSuccess(customer -> log.info("Successful find - cardNumber: "
+        .concat(cardNumber.toString())));
+  }
 
-    @Override
-    public Mono<DebitCard> findDebitCard(String debitCardId) {
-        return debitCardReactiveMongodb.findById(debitCardId)
-            .doOnSuccess(account -> log.info("Successful find - debitCardId: ".concat(debitCardId)));
-    }
+  @Override
+  public Mono<DebitCard> findDebitCard(String debitCardId) {
+    return debitCardReactiveMongodb.findById(debitCardId)
+      .doOnSuccess(account -> log.info("Successful find - debitCardId: ".concat(debitCardId)));
+  }
 
-    @Override
-    public Mono<Boolean> findExistsDebitCard(BigInteger cardNumber) {
-        return debitCardReactiveMongodb.existsByCardNumber(cardNumber)
-            .doOnSuccess(result -> log.info("Successful find exists - cardNumber: ".concat(cardNumber.toString())));
-    }
+  @Override
+  public Mono<Boolean> findExistsDebitCard(BigInteger cardNumber) {
+    return debitCardReactiveMongodb.existsByCardNumber(cardNumber)
+      .doOnSuccess(
+        result -> log.info("Successful find exists - cardNumber: ".concat(cardNumber.toString())));
+  }
 
-    @Override
-    public Mono<DebitCard> saveDebitCard(DebitCard debitCard) {
-        return debitCardReactiveMongodb.save(debitCard)
-            .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Debit Card not found - "
-                + "debitCardId: ".concat(debitCard.getId()))));
-    }
+  @Override
+  public Mono<DebitCard> saveDebitCard(DebitCard debitCard) {
+    return debitCardReactiveMongodb.save(debitCard)
+      .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND,
+        "Debit Card not found - debitCardId: ".concat(debitCard.getId()))));
+  }
 
 }
