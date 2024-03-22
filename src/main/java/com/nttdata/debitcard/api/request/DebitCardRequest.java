@@ -44,10 +44,7 @@ public class DebitCardRequest {
   @Valid
   private List<AccountAssociatedRequest> accountsAssociated;
 
-  @Size(min = 16, max = 16)
-  @Pattern(regexp = "^[45]\\d{15}$")
   private BigInteger cardNumber;
-  @Size(min = 3, max = 3)
   private Integer cvv;
   private LocalDate expirationDate;
   private LocalDate activateDate;
