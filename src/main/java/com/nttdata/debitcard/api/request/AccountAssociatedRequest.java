@@ -1,7 +1,6 @@
 package com.nttdata.debitcard.api.request;
 
 import com.nttdata.debitcard.enums.AssociatedTypeEnum;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigInteger;
 import lombok.AllArgsConstructor;
@@ -32,7 +31,7 @@ public class AccountAssociatedRequest {
   @NotNull
   private AssociatedTypeEnum associatedType;
 
-  @NotBlank
+  @NotNull
   private BigInteger accountNumber;
 
 }
